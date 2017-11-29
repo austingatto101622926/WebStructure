@@ -28,17 +28,21 @@ namespace ConsoleApp
             myWeb.MutualLink(myWeb.NodeByKey("0"), myWeb.NodeByKey("A"));
             myWeb.MutualLink(myWeb.NodeByKey("Z"), myWeb.NodeByKey("A"));
 
-            string currentKey = "0";
+            Node<string> currentNode = myWeb.NodeByKey("A");
+
+            Console.WriteLine(myWeb.NodeByKey("D"));
+
             while (true)
             {
-                Console.Clear();
-                myWeb.NodeByKey(currentKey).Links.ForEach(L => Console.WriteLine("{0} = {1}", L.Key, L.Value));
+                //Console.Clear();
+                currentNode.Links.ForEach(L => Console.WriteLine("{0} = {1}", L.Key, L.Value));
 
                 string input = Console.ReadLine();
 
-                if (myWeb.NodeByKey(currentKey).Links.Contains(myWeb.NodeByKey(input)))
+                if (currentNode.Links.Contains(myWeb.NodeByKey(input)))
                 {
-                    currentKey = input;
+                    currentNode = myWeb.NodeByKey(input);
+                    currentNode.LinkTo(currentNode);
                 }
             }
         }

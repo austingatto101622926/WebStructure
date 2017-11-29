@@ -6,7 +6,7 @@ namespace WebStructure
 {
     public class Web<T>
     {
-        public List<Node> Nodes { get; private set; } = new List<Node>();
+        public List<Node<T> > Nodes { get; private set; } = new List<Node<T> >();
 
         public bool AddNode(string key, T value)
         {
@@ -16,17 +16,17 @@ namespace WebStructure
             }
             else //otherwise...
             {
-                Nodes.Add(new Node(this, key, value)); //create and add the node to the list...
+                Nodes.Add(new Node<T>(this, key, value)); //create and add the node to the list...
                 return true; //and return true.
             }
         }
 
-        public Node NodeByKey(string key)
+        public Node<T> NodeByKey(string key)
         {
             return Nodes.Find(N => N.Key == key);
         }
 
-        public void RemoveNode(Node node)
+        public void RemoveNode(Node<T> node)
         {
             Nodes.Where(N => N.Links.Contains(node)).ToList().ForEach(N => N.UnlinkFrom(node));
             Nodes.Remove(node);
@@ -37,58 +37,16 @@ namespace WebStructure
             RemoveNode(NodeByKey(key));
         }
 
-        public void MutualLink(Node node1, Node node2)
+        public void MutualLink(Node<T> node1, Node<T> node2)
         {
             node1.LinkTo(node2);
             node2.LinkTo(node1);
         }
 
-        public void MutualUnlink(Node node1, Node node2)
+        public void MutualUnlink(Node<T> node1, Node<T> node2)
         {
             node1.UnlinkFrom(node2);
             node2.UnlinkFrom(node1);
         }
-
-
-
-        //NODE CLASS 
-        public class Node
-        {
-            public T Value { get; set; }
-            public string Key { get; set; }
-            public List<Node> Links { get; private set; }
-
-            private Web<T> Parent;
-
-            public Node(Web<T> parent, string key, T value)
-            {
-                this.Value = value;
-                this.Key = key;
-                Links = new List<Node>();
-
-                this.Parent = parent;
-            }
-
-            public void LinkTo(Node node)
-            {
-                if (Parent.Nodes.Contains(node)) this.Links.Add(node);
-            }
-
-            public void LinkTo(string key)
-            {
-                this.LinkTo(Parent.NodeByKey(key));
-            }
-
-            public void UnlinkFrom(Node node)
-            {
-                this.Links.Remove(node);
-            }            
-
-            public void UnlinkFrom(string key)
-            {
-                this.UnlinkFrom(Parent.NodeByKey(key));
-            }
-        }
-
     }
 }
